@@ -3,22 +3,22 @@ package netconvert
 import (
 	"testing"
 
-	"github.com/EricNeid/go-netconvert/internal/util"
+	"github.com/EricNeid/go-netconvert/internal/test"
 )
 
 func TestDecode(t *testing.T) {
 	// action
 	net, err := Decode("testdata/sample.osm.xml")
 	// verify
-	util.Ok(t, err)
-	util.Assert(t, len(net.Nodes) > 0, "Empty list of nodes returned")
-	util.Assert(t, len(net.Ways) > 0, "Empty list of ways returned")
+	test.Ok(t, err)
+	test.Assert(t, len(net.Nodes) > 0, "Empty list of nodes returned")
+	test.Assert(t, len(net.Ways) > 0, "Empty list of ways returned")
 
 	way := net.Ways[0]
-	util.Assert(t, len(way.NodeRefs) > 0, "Way has no node references")
-	util.Assert(t, len(way.NodeRefs[0].NodeID) > 0, "Node reference is empty")
+	test.Assert(t, len(way.NodeRefs) > 0, "Way has no node references")
+	test.Assert(t, len(way.NodeRefs[0].NodeID) > 0, "Node reference is empty")
 
-	util.Assert(t, len(way.Tags) > 0, "Way has no tags")
-	util.Assert(t, len(way.Tags[0].Name) > 0, "Tag has empty name")
-	util.Assert(t, len(way.Tags[0].Value) > 0, "Tag has empty value")
+	test.Assert(t, len(way.Tags) > 0, "Way has no tags")
+	test.Assert(t, len(way.Tags[0].Name) > 0, "Tag has empty name")
+	test.Assert(t, len(way.Tags[0].Value) > 0, "Tag has empty value")
 }
