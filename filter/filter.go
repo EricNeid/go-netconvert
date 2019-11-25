@@ -1,8 +1,6 @@
 package filter
 
 import (
-	"sync"
-
 	"github.com/EricNeid/go-netconvert/osm"
 )
 
@@ -18,19 +16,11 @@ type ConditionWay = func(way osm.Way) bool
 // returns slice of nodes, satisfying the condition.
 func Nodes(nodes []osm.Node, filter ConditionNode) []osm.Node {
 	var result []osm.Node
-	var wg sync.WaitGroup
-	wg.Add(len(nodes))
-
 	for _, n := range nodes {
-		go func(n osm.Node) {
-			defer wg.Done()
-			if filter(n) {
-				result = append(result, n)
-			}
-		}(n)
+		if filter(n) {
+			result = append(result, n)
+		}
 	}
-
-	wg.Wait()
 	return result
 }
 
@@ -38,18 +28,10 @@ func Nodes(nodes []osm.Node, filter ConditionNode) []osm.Node {
 // returns slice of ways, satisfying the condition.
 func Ways(ways []osm.Way, filter ConditionWay) []osm.Way {
 	var result []osm.Way
-	var wg sync.WaitGroup
-	wg.Add(len(ways))
-
 	for _, w := range ways {
-		go func(w osm.Way) {
-			defer wg.Done()
-			if filter(w) {
-				result = append(result, w)
-			}
-		}(w)
+		if filter(w) {
+			result = append(result, w)
+		}
 	}
-
-	wg.Wait()
 	return result
 }
