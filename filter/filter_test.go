@@ -72,3 +72,14 @@ func TestWays(t *testing.T) {
 	// verify
 	test.Equals(t, 1, len(result))
 }
+
+func TestToFilter(t *testing.T) {
+	// arrange
+	testData := ""
+
+	// action
+	result := ToFilter(testData)
+
+	// verify
+	test.Equals(t, 0, len(result))
+}

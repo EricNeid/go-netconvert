@@ -41,9 +41,13 @@ func Ways(ways []osm.Way, filter ConditionWay) []osm.Way {
 type Operator string
 
 const (
-	EQ  = "="
-	LT  = "<"
-	GT  = ">"
+	// EQ is equivalent to = for int types or string equals
+	EQ = "="
+	// LT is equivalent to < for int types and noop for strings
+	LT = "<"
+	// GT is equivalent to > for int types and noop for strings
+	GT = ">"
+	// NOP means ignore the value and only check for matching name
 	NOP = ""
 )
 
@@ -52,4 +56,11 @@ type Filter struct {
 	Name     string
 	Value    string
 	Operator Operator
+}
+
+// ToFilter parses given string in slice of Filter commands.
+// expected format of input string is:
+// => a>4,b=6,c
+func ToFilter(filter string) []Filter {
+	return nil
 }
