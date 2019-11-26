@@ -30,13 +30,11 @@ func main() {
 		util.Error("main", err)
 		return
 	}
-	fmt.Printf("Finished parsing xml\n")
 	fmt.Printf("  Number of nodes: %d\n", len(net.Nodes))
 	fmt.Printf("  Number of ways:  %d\n", len(net.Ways))
 
 	// process parsed data
 	net = filterNet(net, filterTags)
-	fmt.Printf("Finished parsing xml\n")
 	fmt.Printf("  Number of nodes: %d\n", len(net.Nodes))
 	fmt.Printf("  Number of ways:  %d\n", len(net.Ways))
 
