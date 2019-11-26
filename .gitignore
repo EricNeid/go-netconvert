@@ -5,3 +5,4 @@ testdata/nodes.json
 testdata/ways.json
 testdata/sample.osm.xml.nodes.json
 testdata/sample.osm.xml.ways.json
+.vscode/launch.json

@@ -27,6 +27,7 @@ func parseArgs() (args, error) {
 	if len(flag.Args()) == 0 {
 		return args, errors.New("no xml file given, use -h to show help")
 	}
+	args.xmlFile = flag.Arg(0)
 
 	return args, nil
 }
