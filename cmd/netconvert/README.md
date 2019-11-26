@@ -14,3 +14,7 @@ testdata/sample.osm.xml.ways.json.
 ```bash
 netconvert --filter-tags=a,b,c testdata/sample.osm.xml
 ```
+
+```bash
+netconvert --filter-tags=maxheigh>30,maxweight<20 testdata/sample.osm.xml
+```

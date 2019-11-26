@@ -35,3 +35,21 @@ func Ways(ways []osm.Way, filter ConditionWay) []osm.Way {
 	}
 	return result
 }
+
+// Operator is a operator which is applied on a specific tag to
+// check if the value of a tag has  specific value.
+type Operator string
+
+const (
+	EQ  = "="
+	LT  = "<"
+	GT  = ">"
+	NOP = ""
+)
+
+// Filter represents a single filter criteria for a tag.
+type Filter struct {
+	Name     string
+	Value    string
+	Operator Operator
+}
