@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"os"
 	"time"
 
 	"github.com/EricNeid/go-netconvert"
@@ -12,13 +11,14 @@ import (
 )
 
 func main() {
-	arg := os.Args[1:]
-	if len(arg) == 0 {
-		fmt.Println("Usage: netconvert <pathToXml>")
+
+	arg, err := parseArgs()
+	if err != nil {
+		fmt.Println(err.Error())
 		return
 	}
 
-	xmlFile := arg[0]
+	xmlFile := arg.xmlFile
 
 	net, err := parseFile(xmlFile)
 	if err != nil {
