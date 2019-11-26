@@ -30,13 +30,23 @@ func main() {
 	fmt.Printf("Number of nodes: %d\n", len(net.Nodes))
 	fmt.Printf("Number of ways:  %d\n", len(net.Ways))
 
-	fmt.Printf("Writing output\n")
-	writer.NodesAsJSON(net.Nodes, "out-nodes.json")
-	writer.WaysAsJSON(net.Ways, "out-ways.json")
+	// use name of input file as base name
+	baseName, err := fileName(xmlFile)
+	if err != nil {
+		baseName = "out"
+	}
+	writeResult(net, baseName)
 }
 
 func parseFile(xmlFile string) (*osm.Net, error) {
 	fmt.Printf("Reading input\n")
 	defer util.TimeTrack(time.Now(), "Parsing")
 	return netconvert.Decode(xmlFile)
+}
+
+func writeResult(net *osm.Net, baseName string) {
+	fmt.Printf("Writing output\n")
+	defer util.TimeTrack(time.Now(), "Writing")
+	writer.NodesAsJSON(net.Nodes, baseName+".nodes.json")
+	writer.WaysAsJSON(net.Ways, baseName+".ways.json")
 }
