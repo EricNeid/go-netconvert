@@ -56,6 +56,10 @@ func filterNet(net *osm.Net, tagNames string) *osm.Net {
 	fmt.Printf("Filtering tags\n")
 	defer util.TimeTrack(time.Now(), "Filtering")
 
+	if tagNames == "" {
+		return net
+	}
+
 	nodes := filter.Nodes(net.Nodes, func(n osm.Node) bool {
 		for _, t := range n.Tags {
 			if strings.Contains(tagNames, t.Name) {
