@@ -37,14 +37,14 @@ func Decode(xmlFile string) (*osm.Net, error) {
 		switch se := t.(type) {
 		case xml.StartElement:
 			if se.Name.Local == "node" {
-				n, err := osm.DecodeNode(decoder, &se)
+				n, err := DecodeNode(decoder, &se)
 				if err != nil {
 					util.Error("decode", err)
 				} else {
 					nodes = append(nodes, n)
 				}
 			} else if se.Name.Local == "way" {
-				w, err := osm.DecodeWay(decoder, &se)
+				w, err := DecodeWay(decoder, &se)
 				if err != nil {
 					util.Error("decode", err)
 				} else {
@@ -57,4 +57,18 @@ func Decode(xmlFile string) (*osm.Net, error) {
 		Nodes: nodes,
 		Ways:  ways,
 	}, nil
+}
+
+// DecodeNode parsed given start element into instance of Node
+func DecodeNode(decoder *xml.Decoder, se *xml.StartElement) (osm.Node, error) {
+	var n osm.Node
+	err := decoder.DecodeElement(&n, se)
+	return n, err
+}
+
+// DecodeWay parses given start element into instance of Way
+func DecodeWay(decoder *xml.Decoder, se *xml.StartElement) (osm.Way, error) {
+	var w osm.Way
+	err := decoder.DecodeElement(&w, se)
+	return w, err
 }

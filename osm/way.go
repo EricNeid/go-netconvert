@@ -1,7 +1,5 @@
 package osm
 
-import "encoding/xml"
-
 // Way is a single osm way
 //
 // Sample of pared xml:
@@ -28,11 +26,4 @@ type Way struct {
 // NodeRef is a single node reference in osm way
 type NodeRef struct {
 	NodeID string `xml:"ref,attr"`
-}
-
-// DecodeWay parses given start element into instance of Way
-func DecodeWay(decoder *xml.Decoder, se *xml.StartElement) (Way, error) {
-	var w Way
-	err := decoder.DecodeElement(&w, se)
-	return w, err
 }
