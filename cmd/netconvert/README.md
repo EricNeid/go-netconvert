@@ -4,17 +4,22 @@ A command line tool to process and filter osm.xml.
 
 ## Usage
 
-There are some command line arguments to filter input.
-
-The following command reads testdata/sample.oms.xml file, drops
-all nodes and ways that do not contain tag named a,b or c.
-The result is saved to testdata/sample.osm.xml.nodes.json and
-testdata/sample.osm.xml.ways.json.
+Simple command to convert osm.xml to json:
 
 ```bash
-netconvert --filter-tags=a,b,c testdata/sample.osm.xml
+netconvert testdata/sample.osm.xml
 ```
 
+You can also filter the xml for specific tags. The following statement would
+only write nodes and ways wich have a tag with name of either a or b:
+
 ```bash
-netconvert --filter-tags=maxheigh>30,maxweight<20 testdata/sample.osm.xml
+netconvert --filter-tags=a,b testdata/sample.osm.xml
+```
+
+It is also possible to filter with simple conditions. Available filters are. The following
+command would return only nodes and ways which a maxheigh of 30 or which are bridges:
+
+```bash
+netconvert --filter-tags=maxheigh<30,obstacle=bridge testdata/sample.osm.xml
 ```
