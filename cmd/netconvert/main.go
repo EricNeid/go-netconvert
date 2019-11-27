@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/EricNeid/go-netconvert"
@@ -34,7 +33,11 @@ func main() {
 	fmt.Printf("  Number of ways:  %d\n", len(net.Ways))
 
 	// process parsed data
-	net = filterNet(net, filterTags)
+	net, err = filterNet(net, filterTags)
+	if err != nil {
+		util.Error("main", err)
+		return
+	}
 	fmt.Printf("  Number of nodes: %d\n", len(net.Nodes))
 	fmt.Printf("  Number of ways:  %d\n", len(net.Ways))
 
@@ -52,17 +55,21 @@ func parseFile(xmlFile string) (*osm.Net, error) {
 	return netconvert.Decode(xmlFile)
 }
 
-func filterNet(net *osm.Net, tagNames string) *osm.Net {
+func filterNet(net *osm.Net, filterTags string) (*osm.Net, error) {
 	fmt.Printf("Filtering tags\n")
 	defer util.TimeTrack(time.Now(), "Filtering")
 
-	if tagNames == "" {
-		return net
+	if filterTags == "" {
+		return net, nil
+	}
+	filterList, err := filter.ToFilter(filterTags)
+	if err != nil {
+		return net, err
 	}
 
 	nodes := filter.Nodes(net.Nodes, func(n osm.Node) bool {
 		for _, t := range n.Tags {
-			if strings.Contains(tagNames, t.Name) {
+			if matchesFilter(filterList, t) {
 				return true
 			}
 		}
@@ -70,7 +77,7 @@ func filterNet(net *osm.Net, tagNames string) *osm.Net {
 	})
 	ways := filter.Ways(net.Ways, func(n osm.Way) bool {
 		for _, t := range n.Tags {
-			if strings.Contains(tagNames, t.Name) {
+			if matchesFilter(filterList, t) {
 				return true
 			}
 		}
@@ -80,7 +87,25 @@ func filterNet(net *osm.Net, tagNames string) *osm.Net {
 	return &osm.Net{
 		Nodes: nodes,
 		Ways:  ways,
+	}, nil
+}
+
+func matchesFilter(filterList []filter.Filter, tag osm.Tag) bool {
+	for _, f := range filterList {
+		if f.Name == tag.Name {
+			switch f.Operand {
+			case filter.NOP:
+				return true
+			case filter.EQ:
+				return f.Value == tag.Value
+			case filter.LT:
+				return false
+			case filter.GT:
+				return false
+			}
+		}
 	}
+	return false
 }
 
 func writeResult(net *osm.Net, baseName string) {
