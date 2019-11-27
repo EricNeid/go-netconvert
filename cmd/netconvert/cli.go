@@ -1,11 +1,8 @@
 package main
 
 import "flag"
-
 import "fmt"
-
 import "os"
-
 import "errors"
 
 type args struct {
