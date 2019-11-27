@@ -1,6 +1,9 @@
 package filter
 
 import (
+	"fmt"
+	"strings"
+
 	"github.com/EricNeid/go-netconvert/osm"
 )
 
@@ -36,9 +39,9 @@ func Ways(ways []osm.Way, filter ConditionWay) []osm.Way {
 	return result
 }
 
-// Operator is a operator which is applied on a specific tag to
+// Operand is a operator which is applied on a specific tag to
 // check if the value of a tag has  specific value.
-type Operator string
+type Operand string
 
 const (
 	// EQ is equivalent to = for int types or string equals
@@ -53,14 +56,68 @@ const (
 
 // Filter represents a single filter criteria for a tag.
 type Filter struct {
-	Name     string
-	Value    string
-	Operator Operator
+	Name    string
+	Value   string
+	Operand Operand
 }
 
 // ToFilter parses given string in slice of Filter commands.
 // expected format of input string is:
 // => a>4,b=6,c
-func ToFilter(filter string) []Filter {
-	return nil
+// valid operators are:
+// =,<,> and no operator
+func ToFilter(filter string) ([]Filter, error) {
+	var result []Filter
+
+	tagStatements := strings.Split(filter, ",")
+	for _, stm := range tagStatements {
+		var operand Operand
+
+		if strings.Contains(stm, EQ) {
+			operand = EQ
+		} else if strings.Contains(stm, LT) {
+			operand = LT
+		} else if strings.Contains(stm, GT) {
+			operand = GT
+		} else {
+			operand = NOP
+		}
+
+		if operand == NOP {
+			// just filter by tag and no operand or value
+			result = append(result, Filter{
+				Name:    strings.TrimSpace(stm),
+				Value:   "",
+				Operand: operand,
+			})
+		} else {
+			// parse statement into key and value
+			name, value, err := getKeyValue(stm, operand)
+			if err != nil {
+				return result, err
+			}
+			result = append(result, Filter{
+				Name:    name,
+				Value:   value,
+				Operand: operand,
+			})
+		}
+	}
+
+	return result, nil
+}
+
+func getKeyValue(statement string, operand Operand) (string, string, error) {
+	var key string
+	var value string
+	keyValue := strings.Split(statement, string(operand))
+
+	if len(keyValue) != 2 {
+		return key, value, fmt.Errorf("Invalid statement found. Expected format to be a%sb, got %s", operand, statement)
+	}
+
+	key = keyValue[0]
+	value = keyValue[1]
+
+	return strings.TrimSpace(key), strings.TrimSpace(value), nil
 }
