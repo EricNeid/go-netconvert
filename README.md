@@ -1,6 +1,9 @@
 # go-netconvert
 
-A simple parser for osm.xml files. Reads nodes and ways into golang structs.
+A simple parser for osm.xml files. Reads nodes and ways into golang structs. Provides util functions
+to filter and to write back parsed network.
+
+A command line tool to use the functionalities is also provided: [netconvert](cmd/netconvert/)
 
 ## Go get
 
