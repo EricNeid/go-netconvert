@@ -2,6 +2,7 @@ package filter
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/EricNeid/go-netconvert/osm"
@@ -56,9 +57,10 @@ const (
 
 // Filter represents a single filter criteria for a tag.
 type Filter struct {
-	Name    string
-	Value   string
-	Operand Operand
+	Name     string
+	Value    string
+	ValueInt int
+	Operand  Operand
 }
 
 // ToFilter parses given string in slice of Filter commands.
@@ -92,14 +94,15 @@ func ToFilter(filter string) ([]Filter, error) {
 			})
 		} else {
 			// parse statement into key and value
-			name, value, err := getKeyValue(stm, operand)
+			name, value, valueInt, err := getKeyValue(stm, operand)
 			if err != nil {
 				return result, err
 			}
 			result = append(result, Filter{
-				Name:    name,
-				Value:   value,
-				Operand: operand,
+				Name:     name,
+				Value:    value,
+				ValueInt: valueInt,
+				Operand:  operand,
 			})
 		}
 	}
@@ -107,17 +110,22 @@ func ToFilter(filter string) ([]Filter, error) {
 	return result, nil
 }
 
-func getKeyValue(statement string, operand Operand) (string, string, error) {
+func getKeyValue(statement string, operand Operand) (string, string, int, error) {
 	var key string
 	var value string
+	var valueInt int
 	keyValue := strings.Split(statement, string(operand))
 
 	if len(keyValue) != 2 {
-		return key, value, fmt.Errorf("Invalid statement found. Expected format to be a%sb, got %s", operand, statement)
+		return key, value, valueInt, fmt.Errorf("Invalid statement found. Expected format to be a%sb, got %s", operand, statement)
 	}
 
+	var err error
 	key = keyValue[0]
 	value = keyValue[1]
+	if operand == LT || operand == GT {
+		valueInt, err = strconv.Atoi(value)
+	}
 
-	return strings.TrimSpace(key), strings.TrimSpace(value), nil
+	return strings.TrimSpace(key), strings.TrimSpace(value), valueInt, err
 }

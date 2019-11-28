@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/EricNeid/go-netconvert"
@@ -99,9 +100,17 @@ func matchesFilter(filterList []filter.Filter, tag osm.Tag) bool {
 			case filter.EQ:
 				return f.Value == tag.Value
 			case filter.LT:
-				return false
+				valueTag, err := strconv.Atoi(tag.Value)
+				if err != nil {
+					return f.Value == tag.Value
+				}
+				return valueTag < f.ValueInt
 			case filter.GT:
-				return false
+				valueTag, err := strconv.Atoi(tag.Value)
+				if err != nil {
+					return f.Value == tag.Value
+				}
+				return valueTag > f.ValueInt
 			}
 		}
 	}
