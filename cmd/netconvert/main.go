@@ -47,7 +47,7 @@ func main() {
 	if err != nil {
 		baseName = "out"
 	}
-	writeResult(net, baseName)
+	writeResult(*net, baseName)
 }
 
 func parseFile(xmlFile string) (*osm.Net, error) {
@@ -117,9 +117,8 @@ func matchesFilter(filterList []filter.Filter, tag osm.Tag) bool {
 	return false
 }
 
-func writeResult(net *osm.Net, baseName string) {
+func writeResult(net osm.Net, baseName string) {
 	fmt.Printf("Writing output\n")
 	defer util.TimeTrack(time.Now(), "Writing")
-	writer.NodesAsJSON(net.Nodes, baseName+".nodes.json")
-	writer.WaysAsJSON(net.Ways, baseName+".ways.json")
+	writer.AsJSON(net, baseName)
 }
