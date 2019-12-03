@@ -51,38 +51,28 @@ type tagName struct {
 // AsElmarFormat writes the given net to filesystem using
 // the elmar format.
 func AsElmarFormat(net *osm.Net, baseName string) {
-
 	names := getNames(net.Ways)
 	writeNamesAsElmarFormat(names, baseName+"names.csv")
 }
 
-func getNames(ways []osm.Way) []tagName {
-	var names []tagName
-	count := 0
+func getNames(ways []osm.Way) (names []string) {
+	uniqueNames := map[string]bool{}
 	for _, w := range ways {
 		for _, t := range w.Tags {
-			var name string
-			var regName string
-			if t.IsName() {
-				name = t.Value
-			} else if t.IsRegName() {
-				regName = t.Value
-			}
-
-			if name != "" || regName != "" {
-				names = append(names, tagName{
-					name:    name,
-					regName: regName,
-				})
-				count = count + 1
+			if t.IsName() || t.IsRegName() {
+				name := t.Value
+				_, present := uniqueNames[name]
+				if !present {
+					uniqueNames[name] = true
+					names = append(names, name)
+				}
 			}
 		}
 	}
-
 	return names
 }
 
-func writeNamesAsElmarFormat(names []tagName, file string) error {
+func writeNamesAsElmarFormat(names []string, file string) error {
 	f, err := os.Create(file)
 	if err != nil {
 		return err
@@ -92,11 +82,7 @@ func writeNamesAsElmarFormat(names []tagName, file string) error {
 	f.WriteString(strings.Join(elmarNameHeader, delimiter))
 	f.WriteString("\n")
 	for i, n := range names {
-		name := n.name
-		if n.regName != "" {
-			name = n.regName
-		}
-		f.WriteString(fmt.Sprintf("%d%s-1%s%s\n", i, delimiter, delimiter, name))
+		f.WriteString(fmt.Sprintf("%d%s-1%s%s\n", i, delimiter, delimiter, n))
 	}
 	return nil
 }
