@@ -43,11 +43,6 @@ var elmarNameHeader []string = []string{
 	"NAME",
 }
 
-type tagName struct {
-	name    string
-	regName string
-}
-
 // AsElmarFormat writes the given net to filesystem using
 // the elmar format.
 func AsElmarFormat(net *osm.Net, baseName string) {
