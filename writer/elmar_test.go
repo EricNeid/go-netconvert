@@ -46,7 +46,9 @@ func TestWriteLinksAsElmarFormat(t *testing.T) {
 	// arrange
 	testData := []link{
 		link{
-			id: 1,
+			id:         1,
+			nodeIDFrom: 2,
+			nodeIDTo:   3,
 		},
 	}
 	// action

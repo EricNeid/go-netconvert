@@ -75,8 +75,8 @@ var elmarLinksHeader []string = []string{
 
 type link struct {
 	id         int64
-	nodeIDFrom string
-	nodeIDTo   string
+	nodeIDFrom int64
+	nodeIDTo   int64
 }
 
 // AsElmarFormat writes the given net to filesystem using
@@ -91,8 +91,15 @@ func AsElmarFormat(net *osm.Net, baseName string) {
 
 func getLinks(ways []osm.Way) (links []link) {
 	for _, w := range ways {
+		if len(w.NodeRefs) == 0 {
+			// Todo log faulty way
+			continue
+		}
+
 		l := link{
-			id: w.ID,
+			id:         w.ID,
+			nodeIDFrom: w.NodeRefs[0].NodeID,
+			nodeIDTo:   w.NodeRefs[len(w.NodeRefs)-1].NodeID,
 		}
 		links = append(links, l)
 	}
@@ -141,9 +148,12 @@ func writeLinksAsElmarFormat(links []link, file string) error {
 	f.WriteString(strings.Join(elmarLinksHeader, delimiter))
 	f.WriteString("\n")
 	for _, l := range links {
-		f.WriteString(fmt.Sprintf("%d%s\n",
+		f.WriteString(fmt.Sprintf("%d%s%d%s%d\n",
 			l.id,
 			delimiter,
+			l.nodeIDFrom,
+			delimiter,
+			l.nodeIDTo,
 		))
 	}
 	return nil
