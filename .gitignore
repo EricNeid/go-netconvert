@@ -9,3 +9,4 @@ testdata/sample.osm.xml.ways.json
 .vscode
 .vscode/launch.json
 testdata/elmar.names.csv
+testdata/elmar.links.csv

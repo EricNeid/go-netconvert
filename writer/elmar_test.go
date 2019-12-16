@@ -41,3 +41,16 @@ func TestWriteNamesAsElmarFormat(t *testing.T) {
 	// verify
 	verify.Ok(t, err)
 }
+
+func TestWriteLinksAsElmarFormat(t *testing.T) {
+	// arrange
+	testData := []link{
+		link{
+			id: 1,
+		},
+	}
+	// action
+	err := writeLinksAsElmarFormat(testData, "../testdata/elmar.links.csv")
+	// verify
+	verify.Ok(t, err)
+}
