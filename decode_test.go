@@ -16,7 +16,7 @@ func TestDecode(t *testing.T) {
 
 	way := net.Ways[0]
 	verify.Assert(t, len(way.NodeRefs) > 0, "Way has no node references")
-	verify.Assert(t, len(way.NodeRefs[0].NodeID) > 0, "Node reference is empty")
+	verify.Assert(t, way.NodeRefs[0].NodeID > 0, "Node reference is empty")
 
 	verify.Assert(t, len(way.Tags) > 0, "Way has no tags")
 	verify.Assert(t, len(way.Tags[0].Name) > 0, "Tag has empty name")

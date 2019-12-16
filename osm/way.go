@@ -25,5 +25,5 @@ type Way struct {
 
 // NodeRef is a single node reference in osm way
 type NodeRef struct {
-	NodeID string `xml:"ref,attr"`
+	NodeID int64 `xml:"ref,attr"`
 }
