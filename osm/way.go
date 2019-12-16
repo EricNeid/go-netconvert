@@ -18,7 +18,7 @@ package osm
 // 		<tag k="surface" v="asphalt"/>
 // 	</way>
 type Way struct {
-	ID       string    `xml:"id,attr"`
+	ID       int64     `xml:"id,attr"`
 	NodeRefs []NodeRef `xml:"nd"`
 	Tags     []Tag     `xml:"tag"`
 }
