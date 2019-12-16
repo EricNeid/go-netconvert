@@ -9,6 +9,8 @@ import (
 	"github.com/EricNeid/go-netconvert/osm"
 )
 
+var log = util.Log{Context: "decode"}
+
 // Decode parses given xmlFile (which should be osm.xml) and returns
 // the parsed net (containing edges and nodes).
 func Decode(xmlFile string) (*osm.Net, error) {
@@ -39,14 +41,14 @@ func Decode(xmlFile string) (*osm.Net, error) {
 			if se.Name.Local == "node" {
 				n, err := DecodeNode(decoder, &se)
 				if err != nil {
-					util.Error("decode", err)
+					log.E("decode", err)
 				} else {
 					nodes = append(nodes, n)
 				}
 			} else if se.Name.Local == "way" {
 				w, err := DecodeWay(decoder, &se)
 				if err != nil {
-					util.Error("decode", err)
+					log.E("decode", err)
 				} else {
 					ways = append(ways, w)
 				}

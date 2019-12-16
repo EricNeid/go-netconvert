@@ -12,6 +12,8 @@ import (
 	"github.com/EricNeid/go-netconvert/writer"
 )
 
+var log = util.Log{Context: "main"}
+
 func main() {
 
 	// read user input
@@ -27,7 +29,7 @@ func main() {
 	// parse file
 	net, err := parseFile(xmlFile)
 	if err != nil {
-		util.Error("main", err)
+		log.E("main", err)
 		return
 	}
 	fmt.Printf("  Number of nodes: %d\n", len(net.Nodes))
@@ -36,7 +38,7 @@ func main() {
 	// process parsed data
 	net, err = filterNet(net, filterTags)
 	if err != nil {
-		util.Error("main", err)
+		log.E("main", err)
 		return
 	}
 	fmt.Printf("  Number of nodes: %d\n", len(net.Nodes))

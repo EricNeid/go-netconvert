@@ -1,12 +1,11 @@
 package writer
 
 import "github.com/EricNeid/go-netconvert/osm"
-
+import "github.com/EricNeid/go-netconvert/internal/util"
 import "os"
-
 import "strings"
-
 import "fmt"
+import "errors"
 
 const delimiter = "\t"
 
@@ -73,6 +72,8 @@ var elmarLinksHeader []string = []string{
 	"CONNECTION",
 }
 
+var log = util.Log{Context: "elmar"}
+
 type link struct {
 	id         int64
 	nodeIDFrom int64
@@ -92,7 +93,7 @@ func AsElmarFormat(net *osm.Net, baseName string) {
 func getLinks(ways []osm.Way) (links []link) {
 	for _, w := range ways {
 		if len(w.NodeRefs) == 0 {
-			// Todo log faulty way
+			log.E("getLinks", errors.New("Invalid way detected, number of node references must not be empty"))
 			continue
 		}
 
