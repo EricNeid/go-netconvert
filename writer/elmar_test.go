@@ -3,7 +3,7 @@ package writer
 import (
 	"testing"
 
-	"github.com/EricNeid/go-netconvert/internal/test"
+	"github.com/EricNeid/go-netconvert/internal/verify"
 	"github.com/EricNeid/go-netconvert/osm"
 )
 
@@ -30,7 +30,7 @@ func TestGetNames_shouldNotContainDuplicates(t *testing.T) {
 	// action
 	resultNames := getNames(testData)
 	// verify
-	test.Equals(t, 1, len(resultNames))
+	verify.Equals(t, 1, len(resultNames))
 }
 
 func TestWriteNamesAsElmarFormat(t *testing.T) {
@@ -39,5 +39,5 @@ func TestWriteNamesAsElmarFormat(t *testing.T) {
 	// action
 	err := writeNamesAsElmarFormat(testData, "../testdata/elmar.names.csv")
 	// verify
-	test.Ok(t, err)
+	verify.Ok(t, err)
 }

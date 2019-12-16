@@ -3,7 +3,7 @@ package writer
 import (
 	"testing"
 
-	"github.com/EricNeid/go-netconvert/internal/test"
+	"github.com/EricNeid/go-netconvert/internal/verify"
 	"github.com/EricNeid/go-netconvert/osm"
 )
 
@@ -30,7 +30,7 @@ func TestNodesAsJSON(t *testing.T) {
 	err := NodesAsJSON(testData, "../testdata/nodes.json")
 
 	// verify
-	test.Ok(t, err)
+	verify.Ok(t, err)
 }
 
 func TestWaysAsJSON(t *testing.T) {
@@ -56,5 +56,5 @@ func TestWaysAsJSON(t *testing.T) {
 	err := WaysAsJSON(testData, "../testdata/ways.json")
 
 	// verify
-	test.Ok(t, err)
+	verify.Ok(t, err)
 }
