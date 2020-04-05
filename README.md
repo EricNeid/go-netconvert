@@ -1,3 +1,5 @@
+[![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/EricNeid/go-netconvert) 
+
 # go-netconvert
 
 A simple parser for osm.xml files. Reads nodes and ways into golang structs. Provides util functions

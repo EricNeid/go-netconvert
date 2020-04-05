@@ -1,4 +1,5 @@
-*.exe
+cmd/netconvert/netconvert.exe
+cmd/netconvert/netconvert
 
 *.test
 testdata/nodes.json
