@@ -1,7 +1,10 @@
 package main
 
-import "testing"
-import "github.com/EricNeid/go-netconvert/internal/verify"
+import (
+	"testing"
+
+	"github.com/EricNeid/go-netconvert/internal/verify"
+)
 
 func TestParseFile(t *testing.T) {
 	// action
@@ -21,19 +24,19 @@ func TestTilterNet(t *testing.T) {
 	// verify
 	verify.Ok(t, err)
 	verify.Equals(t, 0, len(result.Nodes))
-	verify.Equals(t, 7, len(result.Ways))
+	verify.Equals(t, 4, len(result.Ways))
 
 	// action
 	result, err = filterNet(net, "maxheight")
 	// verify
 	verify.Ok(t, err)
-	verify.Equals(t, 55, len(result.Nodes))
-	verify.Equals(t, 22, len(result.Ways))
+	verify.Equals(t, 8, len(result.Nodes))
+	verify.Equals(t, 15, len(result.Ways))
 
 	// action
 	result, err = filterNet(net, "obstacle=bridge")
 	// verify
 	verify.Ok(t, err)
-	verify.Equals(t, 53, len(result.Nodes))
+	verify.Equals(t, 7, len(result.Nodes))
 	verify.Equals(t, 0, len(result.Ways))
 }
