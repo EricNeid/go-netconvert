@@ -1,4 +1,3 @@
 tasks:
-  - before: brew install git-lfs && git lfs install
-  - init: git lfs pull
+  - init: make test
     command: make build build-windows
