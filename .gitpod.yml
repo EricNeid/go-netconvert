@@ -1,3 +1,8 @@
 tasks:
+<<<<<<< HEAD
   - before: brew install git-lfs && git lfs install && git lfs pull
+=======
+  - before: brew install git-lfs
+  - before: git lfs install
+>>>>>>> 0746a3d6fdc1e8cf1fd0ec8fecd7b818525a6160
   - init: make all
