@@ -1,4 +1,4 @@
-all: build build-windows
+all: test build build-windows
 
 build:
 	cd cmd/netconvert && go build
