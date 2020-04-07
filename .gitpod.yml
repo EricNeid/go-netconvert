@@ -1,3 +1,4 @@
 tasks:
   - before: brew install git-lfs
+  - before: git lfs install
   - init: make all
