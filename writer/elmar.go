@@ -2,14 +2,10 @@ package writer
 
 import "github.com/EricNeid/go-netconvert/osm"
 import "github.com/EricNeid/go-netconvert/internal/util"
-import "os"
-import "strings"
-import "fmt"
-import "errors"
 
 const delimiter = "\t"
 
-var elmarWaysHeader []string = []string{
+var headerElmarLinks []string = []string{
 	"LINK_ID",
 	"NODE_ID_FROM",
 	"NODE_ID_TO",
@@ -36,75 +32,59 @@ var elmarWaysHeader []string = []string{
 	"ISRAMP",
 	"CONNECTION",
 }
-var elmarNameHeader []string = []string{
+var headerElmarNames []string = []string{
 	"NAME_ID",
 	"PERMANENT_ID_INFO",
 	"NAME",
 }
-var elmarLinksHeader []string = []string{
-	"LINK_ID",
-	"NODE_ID_FROM",
-	"NODE_ID_TO",
-	"BETWEEN_NODE_ID",
-	"LENGTH",
-	"VEHICLE_TYPE",
-	"FORM_OF_WAY",
-	"BRUNNEL_TYPE",
-	"FUNCTIONAL_ROAD_CLASS",
-	"SPEED_CATEGORY",
-	"NUMBER_OF_LANES",
-	"SPEED_LIMIT",
-	"SPEED_RESTRICTION",
-	"NAME_ID1_REGIONAL",
-	"NAME_ID2_LOCAL",
-	"HOUSENUMBERS_RIGHT",
-	"HOUSENUMBERS_LEFT",
-	"ZIP_CODE",
-	"MAX_WIDTH",
-	"MAX_WEIGHT",
-	"MAX_HEIGHT",
-	"AREA_ID",
-	"SUBAREA_ID",
-	"THROUGH_TRAFFIC",
-	"SPECIAL_RESTRICTIONS",
-	"EXTENDED_NUMBER_OF_LANES",
-	"ISRAMP",
-	"CONNECTION",
-}
 
 var log = util.Log{Context: "elmar"}
 
-type link struct {
-	id         int64
-	nodeIDFrom int64
-	nodeIDTo   int64
+// elmarWay is an intermediate model to convert osm ways and nodes
+// to elmar format.
+type elmarWay struct {
+	way   osm.Way
+	edges []nodeTupel
+}
+
+type nodeTupel struct {
+	from osm.Node
+	to   osm.Node
+}
+
+type elmarEdge struct {
+	// tbd
 }
 
 // AsElmarFormat writes the given net to filesystem using
 // the elmar format.
 func AsElmarFormat(net *osm.Net, baseName string) {
-	names := getNames(net.Ways)
-	writeNamesAsElmarFormat(names, baseName+"names.csv")
 
-	links := getLinks(net.Ways)
-	writeLinksAsElmarFormat(links, baseName+"links.csv")
-}
-
-func getLinks(ways []osm.Way) (links []link) {
-	for _, w := range ways {
-		if len(w.NodeRefs) == 0 {
-			log.E("getLinks", errors.New("Invalid way detected, number of node references must not be empty"))
-			continue
-		}
-
-		l := link{
-			id:         w.ID,
-			nodeIDFrom: w.NodeRefs[0].NodeID,
-			nodeIDTo:   w.NodeRefs[len(w.NodeRefs)-1].NodeID,
-		}
-		links = append(links, l)
+	// create map of nodes for easier access
+	var nodes = make(map[int64]osm.Node)
+	for _, n := range net.Nodes {
+		nodes[n.ID] = n
 	}
-	return links
+
+	// parse osm data into elmar structs
+	var elmarWays []elmarWay
+	for _, w := range net.Ways {
+		newElmarWay := elmarWay{
+			way: w,
+		}
+		for i := 0; i < len(w.NodeRefs)-1; i++ {
+			startRef := w.NodeRefs[i].NodeID
+			endRef := w.NodeRefs[i+1].NodeID
+
+			newElmarWay.edges = append(newElmarWay.edges, nodeTupel{
+				from: nodes[startRef],
+				to:   nodes[endRef],
+			})
+		}
+
+		elmarWays = append(elmarWays, newElmarWay)
+	}
+
 }
 
 func getNames(ways []osm.Way) (names []string) {
@@ -122,40 +102,4 @@ func getNames(ways []osm.Way) (names []string) {
 		}
 	}
 	return names
-}
-
-func writeNamesAsElmarFormat(names []string, file string) error {
-	f, err := os.Create(file)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	f.WriteString(strings.Join(elmarNameHeader, delimiter))
-	f.WriteString("\n")
-	for i, n := range names {
-		f.WriteString(fmt.Sprintf("%d%s-1%s%s\n", i, delimiter, delimiter, n))
-	}
-	return nil
-}
-
-func writeLinksAsElmarFormat(links []link, file string) error {
-	f, err := os.Create(file)
-	if err != nil {
-		return err
-	}
-	defer f.Close()
-
-	f.WriteString(strings.Join(elmarLinksHeader, delimiter))
-	f.WriteString("\n")
-	for _, l := range links {
-		f.WriteString(fmt.Sprintf("%d%s%d%s%d\n",
-			l.id,
-			delimiter,
-			l.nodeIDFrom,
-			delimiter,
-			l.nodeIDTo,
-		))
-	}
-	return nil
 }
