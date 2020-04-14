@@ -59,7 +59,10 @@ type elmarEdge struct {
 // AsElmarFormat writes the given net to filesystem using
 // the elmar format.
 func AsElmarFormat(net *osm.Net, baseName string) {
+	toElmarWays(net)
+}
 
+func toElmarWays(net *osm.Net) []elmarWay {
 	// create map of nodes for easier access
 	var nodes = make(map[int64]osm.Node)
 	for _, n := range net.Nodes {
@@ -85,6 +88,7 @@ func AsElmarFormat(net *osm.Net, baseName string) {
 		elmarWays = append(elmarWays, newElmarWay)
 	}
 
+	return elmarWays
 }
 
 func getNames(ways []osm.Way) (names []string) {
