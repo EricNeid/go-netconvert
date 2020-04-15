@@ -73,27 +73,48 @@ type elmarLink struct {
 	// tbd
 }
 
-type intTupel struct {
-	x int64
-	y int64
+type floatTupel struct {
+	x float32
+	y float32
 }
 
 type elmarNode struct {
 	nodeID      int64
-	coordinates []intTupel
+	coordinates []floatTupel
 }
 
 // AsElmarFormat writes the given net to filesystem using
 // the elmar format.
 func AsElmarFormat(net *osm.Net, baseName string) {
 	ways := toElmarWays(net)
+	nodes := toElmarNodes(net)
 
 	writeWaysAsElmarFormat(ways, baseName+"_links.txt")
+	writeNodesAsElmarFormat(nodes, baseName+"_nodes.txt")
 }
 
 func toElmarNodes(net *osm.Net) []elmarNode {
-	// tdb
-	return nil
+	nodes := make(map[int64][]osm.Node)
+	for _, n := range net.Nodes {
+		nodes[n.ID] = append(nodes[n.ID], n)
+	}
+
+	var elmarNodes []elmarNode
+	for nodeID, nodes := range nodes {
+		newElmarNode := elmarNode{
+			nodeID: nodeID,
+		}
+		for _, n := range nodes {
+			newTupel := floatTupel{
+				x: n.Lon,
+				y: n.Lat,
+			}
+			newElmarNode.coordinates = append(newElmarNode.coordinates, newTupel)
+		}
+		elmarNodes = append(elmarNodes, newElmarNode)
+	}
+
+	return elmarNodes
 }
 
 func toElmarWays(net *osm.Net) []elmarWay {
@@ -146,6 +167,11 @@ func writeWaysAsElmarFormat(ways []elmarWay, file string) error {
 			))
 		}
 	}
+	return nil
+}
+
+func writeNodesAsElmarFormat(nodes []elmarNode, file string) error {
+	// tbd
 	return nil
 }
 

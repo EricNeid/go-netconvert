@@ -76,6 +76,29 @@ func Test_writeWaysAsElmarFormat(t *testing.T) {
 	verify.Ok(t, result)
 }
 
+func Test_toElmarNodes(t *testing.T) {
+	// arrange
+	testData := osm.Net{
+		Nodes: []osm.Node{
+			osm.Node{ID: 1, Lat: 1, Lon: 2},
+			osm.Node{ID: 1, Lat: 3, Lon: 4},
+			osm.Node{ID: 2, Lat: 1, Lon: 2},
+		},
+	}
+	// action
+	result := toElmarNodes(&testData)
+	// verify
+	verify.Equals(t, 2, len(result))
+	verify.Equals(t, 2, len(result[0].coordinates))
+	verify.Equals(t, float32(2), result[0].coordinates[0].x)
+	verify.Equals(t, float32(1), result[0].coordinates[0].y)
+	verify.Equals(t, float32(4), result[0].coordinates[1].x)
+	verify.Equals(t, float32(3), result[0].coordinates[1].y)
+	verify.Equals(t, 1, len(result[1].coordinates))
+	verify.Equals(t, float32(2), result[1].coordinates[0].x)
+	verify.Equals(t, float32(1), result[1].coordinates[0].y)
+}
+
 func Test_getNames_shouldNotContainDuplicates(t *testing.T) {
 	// arrange
 	testData := []osm.Way{
