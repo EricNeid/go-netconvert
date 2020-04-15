@@ -171,7 +171,35 @@ func writeWaysAsElmarFormat(ways []elmarWay, file string) error {
 }
 
 func writeNodesAsElmarFormat(nodes []elmarNode, file string) error {
-	// tbd
+	f, err := os.Create(file)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	f.WriteString(strings.Join(headerElmarNodes, delimiter))
+	f.WriteString("\n")
+	for _, n := range nodes {
+		// write static information
+		f.WriteString(fmt.Sprintf("%d%s%d%s%d",
+			n.nodeID,
+			delimiter,
+			-1,
+			delimiter,
+			len(n.coordinates),
+		))
+		// write all available coordinates
+		for _, c := range n.coordinates {
+			f.WriteString(fmt.Sprintf("%s%f%s%f",
+				delimiter,
+				c.x,
+				delimiter,
+				c.y,
+			))
+		}
+		// new line
+		f.WriteString(delimiter + "\n")
+	}
 	return nil
 }
 

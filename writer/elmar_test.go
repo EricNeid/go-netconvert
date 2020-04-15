@@ -76,6 +76,23 @@ func Test_writeWaysAsElmarFormat(t *testing.T) {
 	verify.Ok(t, result)
 }
 
+func Test_writeNodesAsElmarFormat(t *testing.T) {
+	// arrange
+	testData := []elmarNode{
+		elmarNode{
+			nodeID: 1,
+			coordinates: []floatTupel{
+				floatTupel{x: 1, y: 2},
+				floatTupel{x: 4, y: 3},
+			},
+		},
+	}
+	// action
+	result := writeNodesAsElmarFormat(testData, "../testdata/test_writeNodessAsElmarFormat.txt")
+	// verify
+	verify.Ok(t, result)
+}
+
 func Test_toElmarNodes(t *testing.T) {
 	// arrange
 	testData := osm.Net{

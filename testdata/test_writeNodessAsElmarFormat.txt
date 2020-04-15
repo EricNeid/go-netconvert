@@ -1,0 +1,2 @@
+NODE_ID	IS_BETWEEN_NODE	amount_of_geocoordinates	x1	y1	[x2 y2  ... xn  yn]
+1	-1	2	1.000000	2.000000	4.000000	3.000000	
