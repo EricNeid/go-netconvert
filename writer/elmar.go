@@ -1,7 +1,11 @@
 package writer
 
-import "github.com/EricNeid/go-netconvert/osm"
-import "github.com/EricNeid/go-netconvert/internal/util"
+import (
+	"fmt"
+
+	"github.com/EricNeid/go-netconvert/internal/util"
+	"github.com/EricNeid/go-netconvert/osm"
+)
 
 const delimiter = "\t"
 
@@ -32,10 +36,18 @@ var headerElmarLinks []string = []string{
 	"ISRAMP",
 	"CONNECTION",
 }
+
 var headerElmarNames []string = []string{
 	"NAME_ID",
 	"PERMANENT_ID_INFO",
 	"NAME",
+}
+
+var headerElmarNodes []string = []string{
+	"NODE_ID",
+	"IS_BETWEEN_NODE",
+	"amount_of_geocoordinates",
+	"x1	y1	[x2 y2  ... xn  yn]",
 }
 
 var log = util.Log{Context: "elmar"}
@@ -52,7 +64,10 @@ type nodeTupel struct {
 	to   osm.Node
 }
 
-type elmarEdge struct {
+type elmarLink struct {
+	linkID     string
+	nodeIDFrom int64
+	nodeIDTo   int64
 	// tbd
 }
 
@@ -89,6 +104,19 @@ func toElmarWays(net *osm.Net) []elmarWay {
 	}
 
 	return elmarWays
+}
+
+func toElmarLinks(way elmarWay) []elmarLink {
+	var edges []elmarLink
+	for _, e := range way.edges {
+		newEdge := elmarLink{
+			linkID:     fmt.Sprintf("%d_%d_%d", way.way.ID, e.from.ID, e.to.ID),
+			nodeIDFrom: e.from.ID,
+			nodeIDTo:   e.to.ID,
+		}
+		edges = append(edges, newEdge)
+	}
+	return edges
 }
 
 func getNames(ways []osm.Way) (names []string) {

@@ -34,7 +34,28 @@ func Test_toElmarWays(t *testing.T) {
 	verify.Equals(t, int64(3), result[0].edges[1].to.ID)
 }
 
-func TestGetNames_shouldNotContainDuplicates(t *testing.T) {
+func Test_toElmarLinks(t *testing.T) {
+	// arrange
+	testData := elmarWay{
+		way: osm.Way{
+			ID: 1,
+		},
+		edges: []nodeTupel{
+			nodeTupel{
+				from: osm.Node{ID: 2},
+				to:   osm.Node{ID: 3},
+			},
+		},
+	}
+	// action
+	result := toElmarLinks(testData)
+	// verify
+	verify.Equals(t, "1_2_3", result[0].linkID)
+	verify.Equals(t, int64(2), result[0].nodeIDFrom)
+	verify.Equals(t, int64(3), result[0].nodeIDTo)
+}
+
+func Test_getNames_shouldNotContainDuplicates(t *testing.T) {
 	// arrange
 	testData := []osm.Way{
 		osm.Way{
