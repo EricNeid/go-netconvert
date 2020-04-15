@@ -2,6 +2,8 @@ package writer
 
 import (
 	"fmt"
+	"os"
+	"strings"
 
 	"github.com/EricNeid/go-netconvert/internal/util"
 	"github.com/EricNeid/go-netconvert/osm"
@@ -74,7 +76,9 @@ type elmarLink struct {
 // AsElmarFormat writes the given net to filesystem using
 // the elmar format.
 func AsElmarFormat(net *osm.Net, baseName string) {
-	toElmarWays(net)
+	ways := toElmarWays(net)
+
+	writeWaysAsElmarFormat(ways, baseName+"_links.txt")
 }
 
 func toElmarWays(net *osm.Net) []elmarWay {
@@ -104,6 +108,30 @@ func toElmarWays(net *osm.Net) []elmarWay {
 	}
 
 	return elmarWays
+}
+
+func writeWaysAsElmarFormat(ways []elmarWay, file string) error {
+	f, err := os.Create(file)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+
+	f.WriteString(strings.Join(headerElmarLinks, delimiter))
+	f.WriteString("\n")
+	for _, w := range ways {
+		links := toElmarLinks(w)
+		for _, l := range links {
+			f.WriteString(fmt.Sprintf("%s%s%d%s%d\n",
+				l.linkID,
+				delimiter,
+				l.nodeIDFrom,
+				delimiter,
+				l.nodeIDTo,
+			))
+		}
+	}
+	return nil
 }
 
 func toElmarLinks(way elmarWay) []elmarLink {

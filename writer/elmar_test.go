@@ -55,6 +55,27 @@ func Test_toElmarLinks(t *testing.T) {
 	verify.Equals(t, int64(3), result[0].nodeIDTo)
 }
 
+func Test_writeWaysAsElmarFormat(t *testing.T) {
+	// arrange
+	testData := []elmarWay{
+		elmarWay{
+			way: osm.Way{
+				ID: 1,
+			},
+			edges: []nodeTupel{
+				nodeTupel{
+					from: osm.Node{ID: 2},
+					to:   osm.Node{ID: 3},
+				},
+			},
+		},
+	}
+	// action
+	result := writeWaysAsElmarFormat(testData, "../testdata/test_writeWaysAsElmarFormat.txt")
+	// verify
+	verify.Ok(t, result)
+}
+
 func Test_getNames_shouldNotContainDuplicates(t *testing.T) {
 	// arrange
 	testData := []osm.Way{
