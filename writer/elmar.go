@@ -73,12 +73,27 @@ type elmarLink struct {
 	// tbd
 }
 
+type intTupel struct {
+	x int64
+	y int64
+}
+
+type elmarNode struct {
+	nodeID      int64
+	coordinates []intTupel
+}
+
 // AsElmarFormat writes the given net to filesystem using
 // the elmar format.
 func AsElmarFormat(net *osm.Net, baseName string) {
 	ways := toElmarWays(net)
 
 	writeWaysAsElmarFormat(ways, baseName+"_links.txt")
+}
+
+func toElmarNodes(net *osm.Net) []elmarNode {
+	// tdb
+	return nil
 }
 
 func toElmarWays(net *osm.Net) []elmarWay {
