@@ -17,7 +17,7 @@ only write nodes and ways wich have a tag with name of either a or b:
 netconvert --filter-tags=a,b testdata/sample.osm.xml
 ```
 
-It is also possible to filter with simple conditions. Available filters are. The following
+It is also possible to filter with simple conditions. The following
 command would return only nodes and ways which a maxheigh of 30 or which are bridges:
 
 ```bash
