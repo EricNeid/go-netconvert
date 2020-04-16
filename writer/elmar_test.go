@@ -11,14 +11,14 @@ func Test_toElmarWays(t *testing.T) {
 	// arrnage
 	testData := osm.Net{
 		Nodes: []osm.Node{
-			osm.Node{ID: 1},
-			osm.Node{ID: 2},
-			osm.Node{ID: 3},
+			{ID: 1},
+			{ID: 2},
+			{ID: 3},
 		},
 		Ways: []osm.Way{
-			osm.Way{
+			{
 				ID:       42,
-				NodeRefs: []osm.NodeRef{osm.NodeRef{NodeID: 1}, osm.NodeRef{NodeID: 2}, osm.NodeRef{NodeID: 3}},
+				NodeRefs: []osm.NodeRef{{NodeID: 1}, {NodeID: 2}, {NodeID: 3}},
 			},
 		},
 	}
@@ -41,7 +41,7 @@ func Test_toElmarLinks(t *testing.T) {
 			ID: 1,
 		},
 		edges: []nodeTupel{
-			nodeTupel{
+			{
 				from: osm.Node{ID: 2},
 				to:   osm.Node{ID: 3},
 			},
@@ -58,12 +58,12 @@ func Test_toElmarLinks(t *testing.T) {
 func Test_writeWaysAsElmarFormat(t *testing.T) {
 	// arrange
 	testData := []elmarWay{
-		elmarWay{
+		{
 			way: osm.Way{
 				ID: 1,
 			},
 			edges: []nodeTupel{
-				nodeTupel{
+				{
 					from: osm.Node{ID: 2},
 					to:   osm.Node{ID: 3},
 				},
@@ -79,11 +79,11 @@ func Test_writeWaysAsElmarFormat(t *testing.T) {
 func Test_writeNodesAsElmarFormat(t *testing.T) {
 	// arrange
 	testData := []elmarNode{
-		elmarNode{
+		{
 			nodeID: 1,
 			coordinates: []floatTupel{
-				floatTupel{x: 1, y: 2},
-				floatTupel{x: 4, y: 3},
+				{x: 1, y: 2},
+				{x: 4, y: 3},
 			},
 		},
 	}
@@ -97,9 +97,9 @@ func Test_toElmarNodes(t *testing.T) {
 	// arrange
 	testData := osm.Net{
 		Nodes: []osm.Node{
-			osm.Node{ID: 1, Lat: 1, Lon: 2},
-			osm.Node{ID: 1, Lat: 3, Lon: 4},
-			osm.Node{ID: 2, Lat: 1, Lon: 2},
+			{ID: 1, Lat: 1, Lon: 2},
+			{ID: 1, Lat: 3, Lon: 4},
+			{ID: 2, Lat: 1, Lon: 2},
 		},
 	}
 	// action
@@ -119,17 +119,17 @@ func Test_toElmarNodes(t *testing.T) {
 func Test_getNames_shouldNotContainDuplicates(t *testing.T) {
 	// arrange
 	testData := []osm.Way{
-		osm.Way{
+		{
 			Tags: []osm.Tag{
-				osm.Tag{
+				{
 					Name:  "name",
 					Value: "street",
 				},
 			},
 		},
-		osm.Way{
+		{
 			Tags: []osm.Tag{
-				osm.Tag{
+				{
 					Name:  "name",
 					Value: "street",
 				},

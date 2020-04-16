@@ -10,16 +10,16 @@ import (
 func TestNodesAsJSON(t *testing.T) {
 	// arrange
 	testData := []osm.Node{
-		osm.Node{
+		{
 			Tags: []osm.Tag{
-				osm.Tag{
+				{
 					Name: "foo",
 				},
 			},
 		},
-		osm.Node{
+		{
 			Tags: []osm.Tag{
-				osm.Tag{
+				{
 					Name: "bar",
 				},
 			},
@@ -36,16 +36,16 @@ func TestNodesAsJSON(t *testing.T) {
 func TestWaysAsJSON(t *testing.T) {
 	// arrange
 	testData := []osm.Way{
-		osm.Way{
+		{
 			Tags: []osm.Tag{
-				osm.Tag{
+				{
 					Name: "foo",
 				},
 			},
 		},
-		osm.Way{
+		{
 			Tags: []osm.Tag{
-				osm.Tag{
+				{
 					Name: "bar",
 				},
 			},

@@ -194,6 +194,29 @@ func toElmarWays(net *osm.Net) []elmarWay {
 	return elmarWays
 }
 
+func toElmarNames() map[string]elmarName {
+
+	// tbd
+	return nil
+}
+
+func getNames(ways []osm.Way) (names []string) {
+	uniqueNames := map[string]bool{}
+	for _, w := range ways {
+		for _, t := range w.Tags {
+			if t.IsName() || t.IsRegName() {
+				name := t.Value
+				_, present := uniqueNames[name]
+				if !present {
+					uniqueNames[name] = true
+					names = append(names, name)
+				}
+			}
+		}
+	}
+	return names
+}
+
 func writeWaysAsElmarFormat(ways []elmarWay, file string) error {
 	f, err := os.Create(file)
 	if err != nil {
@@ -238,21 +261,4 @@ func toElmarLinks(way elmarWay) []elmarLink {
 		edges = append(edges, newEdge)
 	}
 	return edges
-}
-
-func getNames(ways []osm.Way) (names []string) {
-	uniqueNames := map[string]bool{}
-	for _, w := range ways {
-		for _, t := range w.Tags {
-			if t.IsName() || t.IsRegName() {
-				name := t.Value
-				_, present := uniqueNames[name]
-				if !present {
-					uniqueNames[name] = true
-					names = append(names, name)
-				}
-			}
-		}
-	}
-	return names
 }
