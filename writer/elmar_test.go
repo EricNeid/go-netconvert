@@ -10,12 +10,34 @@ import (
 func Test_toElmarNames(t *testing.T) {
 	// arrange
 	testData := []osm.Way{
-		{},
+		{
+			Tags: []osm.Tag{
+				{Name: "name", Value: "a-Name"},
+				{Name: "reg_name", Value: "a-Name"},
+				{Name: "reg_name", Value: "b-Name"},
+				{Name: "name", Value: "c-Name"},
+			},
+		},
 	}
 	// action
 	result := toElmarNames(testData)
 	// verify
 	verify.Assert(t, result != nil, "Parsed names are nil")
+
+	verify.Equals(t, int64(0), result["a-Name"].nameID)
+	verify.Equals(t, "a-Name", result["a-Name"].name)
+	verify.Equals(t, true, result["a-Name"].isLocalName)
+	verify.Equals(t, true, result["a-Name"].isRegionalName)
+
+	verify.Equals(t, int64(1), result["b-Name"].nameID)
+	verify.Equals(t, "b-Name", result["b-Name"].name)
+	verify.Equals(t, false, result["b-Name"].isLocalName)
+	verify.Equals(t, true, result["b-Name"].isRegionalName)
+
+	verify.Equals(t, int64(2), result["c-Name"].nameID)
+	verify.Equals(t, "c-Name", result["c-Name"].name)
+	verify.Equals(t, true, result["c-Name"].isLocalName)
+	verify.Equals(t, false, result["c-Name"].isRegionalName)
 }
 
 func Test_toElmarWays(t *testing.T) {

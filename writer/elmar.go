@@ -126,9 +126,10 @@ func (n elmarNode) toCSVString() string {
 // elmarName represents a single name in elmar format. This name is either
 // a local name or regional name. The nameID is unique, regardles of type.
 type elmarName struct {
-	nameID      int64
-	name        string
-	isLocalName bool
+	nameID         int64
+	name           string
+	isLocalName    bool
+	isRegionalName bool
 }
 
 // AsElmarFormat writes the given net to filesystem using
@@ -194,10 +195,38 @@ func toElmarWays(net *osm.Net) []elmarWay {
 	return elmarWays
 }
 
-func toElmarNames(ways []osm.Way) map[string]elmarName {
-	names := make(map[string]elmarName)
+func toElmarNames(ways []osm.Way) map[string]*elmarName {
+	names := make(map[string]*elmarName)
+	idCounter := int64(0)
 
-	// tbd
+	for _, w := range ways {
+		for _, t := range w.Tags {
+			if t.IsName() {
+				if val, ok := names[t.Value]; ok {
+					val.isLocalName = true
+				} else {
+					names[t.Value] = &elmarName{
+						nameID:      idCounter,
+						isLocalName: true,
+						name:        t.Value,
+					}
+					idCounter++
+				}
+			}
+			if t.IsRegName() {
+				if val, ok := names[t.Value]; ok {
+					val.isRegionalName = true
+				} else {
+					names[t.Value] = &elmarName{
+						nameID:         idCounter,
+						isRegionalName: true,
+						name:           t.Value,
+					}
+					idCounter++
+				}
+			}
+		}
+	}
 	return names
 }
 
