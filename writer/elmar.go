@@ -66,6 +66,8 @@ type nodeTupel struct {
 	to   osm.Node
 }
 
+// elmarLink represent a link between 2 nodes in elmar format.
+// It can be converted to csv string.
 type elmarLink struct {
 	linkID     string
 	nodeIDFrom int64
@@ -73,14 +75,60 @@ type elmarLink struct {
 	// tbd
 }
 
+// toCSVString converts this elmar link to csv.
+func (l elmarLink) toCSVString() string {
+	return fmt.Sprintf("%s%s%d%s%d\n",
+		l.linkID,
+		delimiter,
+		l.nodeIDFrom,
+		delimiter,
+		l.nodeIDTo,
+	)
+}
+
+// elmarNode represent a single node in elmar format.
+// It can be converted to csv string.
+type elmarNode struct {
+	nodeID      int64
+	coordinates []floatTupel
+}
+
 type floatTupel struct {
 	x float32
 	y float32
 }
 
-type elmarNode struct {
-	nodeID      int64
-	coordinates []floatTupel
+// toCSVString converts the given elmar node to csv.
+func (n elmarNode) toCSVString() string {
+	csv := ""
+	// write static information
+	csv += fmt.Sprintf("%d%s%d%s%d",
+		n.nodeID,
+		delimiter,
+		-1,
+		delimiter,
+		len(n.coordinates),
+	)
+	// write all available coordinates
+	for _, c := range n.coordinates {
+		csv += fmt.Sprintf("%s%f%s%f",
+			delimiter,
+			c.x,
+			delimiter,
+			c.y,
+		)
+	}
+	// new line
+	csv += delimiter + "\n"
+	return csv
+}
+
+// elmarName represents a single name in elmar format. This name is either
+// a local name or regional name. The nameID is unique, regardles of type.
+type elmarName struct {
+	nameID      int64
+	name        string
+	isLocalName bool
 }
 
 // AsElmarFormat writes the given net to filesystem using
@@ -158,13 +206,7 @@ func writeWaysAsElmarFormat(ways []elmarWay, file string) error {
 	for _, w := range ways {
 		links := toElmarLinks(w)
 		for _, l := range links {
-			f.WriteString(fmt.Sprintf("%s%s%d%s%d\n",
-				l.linkID,
-				delimiter,
-				l.nodeIDFrom,
-				delimiter,
-				l.nodeIDTo,
-			))
+			f.WriteString(l.toCSVString())
 		}
 	}
 	return nil
@@ -180,25 +222,7 @@ func writeNodesAsElmarFormat(nodes []elmarNode, file string) error {
 	f.WriteString(strings.Join(headerElmarNodes, delimiter))
 	f.WriteString("\n")
 	for _, n := range nodes {
-		// write static information
-		f.WriteString(fmt.Sprintf("%d%s%d%s%d",
-			n.nodeID,
-			delimiter,
-			-1,
-			delimiter,
-			len(n.coordinates),
-		))
-		// write all available coordinates
-		for _, c := range n.coordinates {
-			f.WriteString(fmt.Sprintf("%s%f%s%f",
-				delimiter,
-				c.x,
-				delimiter,
-				c.y,
-			))
-		}
-		// new line
-		f.WriteString(delimiter + "\n")
+		f.WriteString(n.toCSVString())
 	}
 	return nil
 }
