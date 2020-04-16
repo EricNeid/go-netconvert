@@ -194,10 +194,11 @@ func toElmarWays(net *osm.Net) []elmarWay {
 	return elmarWays
 }
 
-func toElmarNames() map[string]elmarName {
+func toElmarNames(ways []osm.Way) map[string]elmarName {
+	names := make(map[string]elmarName)
 
 	// tbd
-	return nil
+	return names
 }
 
 func getNames(ways []osm.Way) (names []string) {

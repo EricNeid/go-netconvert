@@ -7,6 +7,17 @@ import (
 	"github.com/EricNeid/go-netconvert/osm"
 )
 
+func Test_toElmarNames(t *testing.T) {
+	// arrange
+	testData := []osm.Way{
+		{},
+	}
+	// action
+	result := toElmarNames(testData)
+	// verify
+	verify.Assert(t, result != nil, "Parsed names are nil")
+}
+
 func Test_toElmarWays(t *testing.T) {
 	// arrnage
 	testData := osm.Net{
